@@ -1,5 +1,7 @@
 package org.api.burger_loyalty_api.config.dev;
 
+import org.api.burger_loyalty_api.exceptionHandling.CustomAccessDeniedHandler;
+import org.api.burger_loyalty_api.exceptionHandling.CustomAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -22,11 +24,17 @@ public class ProjectSecurityDevConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
 
+                .requiresChannel((channel) -> channel
+                        .anyRequest().requiresInsecure()
+                )
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/clients/**", "/client/**").authenticated()
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/clients/**").hasRole("ADMIN")
+                        .requestMatchers("/client/**").hasRole("CLIENT")
+                        .requestMatchers("/auth/register","/auth/login").permitAll()
                 );
 
+        http.exceptionHandling(hbc -> hbc.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+        http.exceptionHandling(hbc -> hbc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
         return http.build();
