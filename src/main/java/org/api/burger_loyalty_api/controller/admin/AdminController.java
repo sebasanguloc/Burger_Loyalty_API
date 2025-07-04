@@ -1,7 +1,9 @@
 package org.api.burger_loyalty_api.controller.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.api.burger_loyalty_api.dto.ResponseDto;
 import org.api.burger_loyalty_api.dto.UserDashboardDto;
+import org.api.burger_loyalty_api.service.inteface.IActiveStampService;
 import org.api.burger_loyalty_api.service.inteface.IUserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final IUserService userService;
+    private final IActiveStampService activeStampService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
@@ -28,14 +31,17 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{mobileNumber}")
     public ResponseEntity<?> getClient(@PathVariable String mobileNumber){
-
         return null;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/active/{mobileNumber}")
-    public ResponseEntity<?> activeButton(@PathVariable String mobileNumber){
-        return null;
+    public ResponseEntity<ResponseDto> activeButton(@PathVariable String mobileNumber){
+        activeStampService.activeStamp(mobileNumber);
+        ResponseDto response = new ResponseDto(
+                String.valueOf(HttpStatus.OK.value()),
+                "Stamp activated to user: " + mobileNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

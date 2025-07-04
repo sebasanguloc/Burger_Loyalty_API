@@ -20,8 +20,6 @@ public class Authority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(max = 50)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)

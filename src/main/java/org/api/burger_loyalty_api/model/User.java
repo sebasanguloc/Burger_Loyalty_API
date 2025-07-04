@@ -23,22 +23,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     private String name;
 
-    @NotBlank
-    @Size(min = 10)
     @Column(name = "mobile_number", unique = true, nullable = false)
     private String mobileNumber;
 
-    @NotBlank
-    @Email
-    @Size(max = 100)
     @Column(unique = true, nullable = false)
     private String email;
 
-    @NotBlank
-    @Size(min = 8)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 

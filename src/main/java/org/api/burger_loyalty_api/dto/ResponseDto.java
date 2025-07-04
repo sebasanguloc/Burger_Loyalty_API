@@ -5,12 +5,10 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserDashboardDto {
+public class ResponseDto {
 
-    private String name;
+    private String statusCode;
 
-    private String mobileNumber;
-
-    private Long totalStamps;
+    private String message;
 
 }

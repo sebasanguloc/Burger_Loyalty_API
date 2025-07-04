@@ -23,17 +23,14 @@ public class ActiveStamp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @NotNull
     @CreationTimestamp
     @Column(name = "enable_dt")
     private LocalDateTime enableDt;
 
-    @NotNull
     @Column(name = "expiration_dt")
     private LocalDateTime expirationDt;
 }
