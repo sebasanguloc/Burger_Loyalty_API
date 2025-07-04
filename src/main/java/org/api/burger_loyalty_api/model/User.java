@@ -27,7 +27,7 @@ public class User {
     private String name;
 
     @NotBlank
-    @Size(min = 20)
+    @Size(min = 10)
     @Column(name = "mobile_number", unique = true, nullable = false)
     private String mobileNumber;
 
