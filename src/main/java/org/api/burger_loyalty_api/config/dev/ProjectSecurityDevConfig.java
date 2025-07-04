@@ -43,7 +43,7 @@ public class ProjectSecurityDevConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .csrf(csrfConfig -> csrfConfig
-                        .ignoringRequestMatchers("/auth/**")
+                        .ignoringRequestMatchers("/auth/register")
                         .csrfTokenRequestHandler(csrfHandler)
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .cors(corsConfig ->
