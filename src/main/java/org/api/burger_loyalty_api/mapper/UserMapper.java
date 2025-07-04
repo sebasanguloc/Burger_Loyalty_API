@@ -1,5 +1,6 @@
 package org.api.burger_loyalty_api.mapper;
 
+import org.api.burger_loyalty_api.dto.UserDashboardDto;
 import org.api.burger_loyalty_api.dto.UserDto;
 import org.api.burger_loyalty_api.model.User;
 
@@ -14,6 +15,10 @@ public class UserMapper {
                 user.getCreateDt()
         );
         return userDto;
+    }
+
+    public static UserDashboardDto UserToUserDashboardDto(User user){
+        return null;
     }
 
 }

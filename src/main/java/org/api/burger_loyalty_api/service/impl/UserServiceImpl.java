@@ -1,6 +1,7 @@
 package org.api.burger_loyalty_api.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.api.burger_loyalty_api.dto.UserDashboardDto;
 import org.api.burger_loyalty_api.dto.UserDto;
 import org.api.burger_loyalty_api.dto.UserRegisterDto;
 import org.api.burger_loyalty_api.exception.UserAlreadyExistException;
@@ -10,6 +11,8 @@ import org.api.burger_loyalty_api.model.User;
 import org.api.burger_loyalty_api.repository.IAuthorityRepository;
 import org.api.burger_loyalty_api.repository.IUserRepository;
 import org.api.burger_loyalty_api.service.inteface.IUserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +50,12 @@ public class UserServiceImpl implements IUserService {
         authorityRepository.save(authority);
 
         return UserMapper.UserToUserDto(newUser);
+    }
+
+    @Override
+    public Page<UserDashboardDto> findAllClientsByPage(Pageable pageable) {
+        Page<UserDashboardDto> userDashboardDtoPage = userRepository.findAllClients(pageable);
+        return userDashboardDtoPage;
     }
 
 
