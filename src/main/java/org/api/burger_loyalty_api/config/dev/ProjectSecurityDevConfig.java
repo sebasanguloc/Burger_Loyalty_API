@@ -67,10 +67,10 @@ public class ProjectSecurityDevConfig {
                         .anyRequest().requiresInsecure()
                 )
                 .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/auth/register").permitAll()
                         .requestMatchers("/clients/**").hasRole("ADMIN")
                         .requestMatchers("/client/**").hasRole("CLIENT")
                         .requestMatchers("/auth/Angus-Burgers-Loyalty").authenticated()
-                        .requestMatchers("/auth/register").permitAll()
                 )
                 .httpBasic(hbc -> hbc
                         .authenticationEntryPoint(new CustomAuthenticationEntryPoint())

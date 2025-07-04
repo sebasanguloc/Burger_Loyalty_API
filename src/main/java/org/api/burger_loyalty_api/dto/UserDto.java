@@ -5,31 +5,26 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.api.burger_loyalty_api.validation.anotation.PasswordMatches;
+
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-@PasswordMatches
 public class UserDto {
+
+    private Long id;
 
     @NotBlank
     private String name;
 
     @NotBlank
     @Size(min = 10)
-    private String cellPhone;
+    private String mobileNumber;
 
     @NotBlank
     @Email
     @Size(max = 100)
     private String email;
 
-    @NotBlank
-    @Size(min = 8)
-    private String password;
-
-    @NotBlank
-    @Size(min = 8)
-    private String repeatPassword;
-
+    private LocalDateTime createDt;
 }
