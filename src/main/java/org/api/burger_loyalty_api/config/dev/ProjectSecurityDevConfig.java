@@ -1,9 +1,12 @@
 package org.api.burger_loyalty_api.config.dev;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.api.burger_loyalty_api.exceptionHandling.CustomAccessDeniedHandler;
 import org.api.burger_loyalty_api.exceptionHandling.CustomAuthenticationEntryPoint;
 import org.api.burger_loyalty_api.filter.CsrfCookieFilter;
+import org.api.burger_loyalty_api.filter.JWTTokenGeneratorFilter;
+import org.api.burger_loyalty_api.filter.JWTTokenValidationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -21,10 +24,12 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+@Slf4j
 @Configuration
 @Profile("dev")
 public class ProjectSecurityDevConfig {
@@ -34,11 +39,8 @@ public class ProjectSecurityDevConfig {
         CsrfTokenRequestAttributeHandler csrfHandler = new CsrfTokenRequestAttributeHandler();
 
         http
-                .securityContext(context -> context
-                        .requireExplicitSave(false)
-                )
                 .sessionManagement(smc -> smc
-                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .csrf(csrfConfig -> csrfConfig
                         .ignoringRequestMatchers("/auth/**")
@@ -52,7 +54,7 @@ public class ProjectSecurityDevConfig {
                         config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
-                        config.setAllowedHeaders(Collections.singletonList("*"));
+                        config.setAllowedHeaders(Arrays.asList("Authorization"));
                         config.setMaxAge(3600L);
                         return config;
                     }
@@ -67,7 +69,8 @@ public class ProjectSecurityDevConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/clients/**").hasRole("ADMIN")
                         .requestMatchers("/client/**").hasRole("CLIENT")
-                        .requestMatchers("/auth/register","/auth/login").permitAll()
+                        .requestMatchers("/auth/Angus-Burgers-Loyalty").authenticated()
+                        .requestMatchers("/auth/register").permitAll()
                 )
                 .httpBasic(hbc -> hbc
                         .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
@@ -77,6 +80,14 @@ public class ProjectSecurityDevConfig {
                 )
                 .addFilterAfter(
                         new CsrfCookieFilter(),
+                        BasicAuthenticationFilter.class
+                )
+                .addFilterAfter(
+                        new JWTTokenGeneratorFilter(),
+                        BasicAuthenticationFilter.class
+                )
+                .addFilterAfter(
+                        new JWTTokenValidationFilter(),
                         BasicAuthenticationFilter.class
                 );
         http.formLogin(withDefaults());
