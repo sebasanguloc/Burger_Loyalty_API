@@ -22,6 +22,13 @@ public class ProjectSecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(smc -> smc
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false)
+                )
+                .requiresChannel((channel) -> channel
+                        .anyRequest().requiresInsecure()
+                )
                 .requiresChannel((channel) -> channel
                         .anyRequest().requiresSecure()
                 )
@@ -31,7 +38,7 @@ public class ProjectSecurityConfig {
                         .requestMatchers("/auth/register","/auth/login").permitAll()
                 );
 
-        http.exceptionHandling(hbc -> hbc.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+        http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
         http.exceptionHandling(hbc -> hbc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
