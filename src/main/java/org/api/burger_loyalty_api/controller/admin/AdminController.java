@@ -45,10 +45,14 @@ public class AdminController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{mobileNumber}")
-    public ResponseEntity<ResponseDto> deleteClient(@PathVariable String mobileNumber){
-
-        return null;
+    @DeleteMapping("/{mobileNumber}")
+    public ResponseEntity<ResponseDto> removeClient(@PathVariable String mobileNumber){
+        userService.removeUser(mobileNumber);
+        ResponseDto response = new ResponseDto(
+                String.valueOf(HttpStatus.OK.value()),
+                "User delete successfully"
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

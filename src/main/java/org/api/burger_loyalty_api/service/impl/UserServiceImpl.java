@@ -11,10 +11,12 @@ import org.api.burger_loyalty_api.model.User;
 import org.api.burger_loyalty_api.repository.IAuthorityRepository;
 import org.api.burger_loyalty_api.repository.IUserRepository;
 import org.api.burger_loyalty_api.service.inteface.IUserService;
+import org.api.burger_loyalty_api.service.inteface.IUtilsService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,8 @@ public class UserServiceImpl implements IUserService {
     private final IAuthorityRepository authorityRepository;
     private final IUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final IUtilsService utilsService;
 
     @Override
     public UserDto registerUser(UserRegisterDto userRegisterDto) {
@@ -58,9 +62,11 @@ public class UserServiceImpl implements IUserService {
         return userDashboardDtoPage;
     }
 
+    @Transactional
     @Override
     public void removeUser(String mobileNumber) {
-        
+        utilsService.findIdUserByMobileNumber(mobileNumber);
+        userRepository.removeByMobileNumber(mobileNumber);
     }
 
 

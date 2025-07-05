@@ -23,7 +23,11 @@ public interface IUserRepository extends JpaRepository<User, Long> {
             u.name, u.mobileNumber, COUNT(ts.user)
         )
         FROM User u
-        JOIN u.totalStamps ts
+        LEFT JOIN u.totalStamps ts
+        WHERE NOT EXISTS (
+            SELECT 1 FROM Authority au
+            WHERE au.user = u AND au.name = 'ROLE_ADMIN'
+            )
         GROUP BY u.name, u.mobileNumber
     """)
     Page<UserDashboardDto> findAllClients(Pageable pageable);
@@ -35,7 +39,8 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u.id FROM User u WHERE u.mobileNumber = :mobileNumber")
     Optional<Long> findIdByMobileNumber(@Param("mobileNumber") String mobileNumber);
 
-    Boolean existsByMobileNumberOrEmail(String mobileNumber, String email);
+    void removeByMobileNumber(String mobileNumber);
 
+    Boolean existsByMobileNumberOrEmail(String mobileNumber, String email);
 
 }
