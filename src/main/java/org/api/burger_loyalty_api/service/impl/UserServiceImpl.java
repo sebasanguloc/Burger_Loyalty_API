@@ -58,5 +58,10 @@ public class UserServiceImpl implements IUserService {
         return userDashboardDtoPage;
     }
 
+    @Override
+    public void removeUser(String mobileNumber) {
+        
+    }
+
 
 }

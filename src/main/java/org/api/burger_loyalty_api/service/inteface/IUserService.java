@@ -12,4 +12,5 @@ public interface IUserService{
 
     Page<UserDashboardDto> findAllClientsByPage(Pageable pageable);
 
+    void removeUser(String mobileNumber);
 }

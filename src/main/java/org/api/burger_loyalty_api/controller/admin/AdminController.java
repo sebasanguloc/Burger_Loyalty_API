@@ -46,7 +46,8 @@ public class AdminController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{mobileNumber}")
-    public ResponseEntity<?> deleteClient(@PathVariable String mobileNumber){
+    public ResponseEntity<ResponseDto> deleteClient(@PathVariable String mobileNumber){
+
         return null;
     }
 

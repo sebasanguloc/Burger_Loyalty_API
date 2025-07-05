@@ -33,7 +33,7 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     Optional<User> findByMobileNumber(String mobileNumber);
 
     @Query("SELECT u.id FROM User u WHERE u.mobileNumber = :mobileNumber")
-    Long findIdByMobileNumber(@Param("mobileNumber") String mobileNumber);
+    Optional<Long> findIdByMobileNumber(@Param("mobileNumber") String mobileNumber);
 
     Boolean existsByMobileNumberOrEmail(String mobileNumber, String email);
 
