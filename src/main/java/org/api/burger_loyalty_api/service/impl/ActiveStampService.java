@@ -1,6 +1,7 @@
 package org.api.burger_loyalty_api.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.api.burger_loyalty_api.dto.ActiveStampDto;
 import org.api.burger_loyalty_api.model.ActiveStamp;
 import org.api.burger_loyalty_api.model.User;
 import org.api.burger_loyalty_api.repository.IActiveStampRepository;
@@ -9,6 +10,9 @@ import org.api.burger_loyalty_api.service.inteface.IUtilsService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,4 +33,5 @@ public class ActiveStampService implements IActiveStampService {
 
         activeStampRepository.save(activeStamp);
     }
+
 }

@@ -47,9 +47,9 @@ public interface IUserRepository extends JpaRepository<User, Long> {
        SELECT new org.api.burger_loyalty_api.dto.UserTargetDto(
             u.name,
             u.mobileNumber,
-            COUNT(ts.id),
+            COUNT(DISTINCT ts.id),
             null,
-            COUNT(acs.id),
+            COUNT(DISTINCT acs.id),
             null
        )
        FROM User u
@@ -59,43 +59,6 @@ public interface IUserRepository extends JpaRepository<User, Long> {
        GROUP BY u.name, u.mobileNumber
     """)
     UserTargetDto findClientTotalStampsActiveStamps(@Param("mobileNumber") String mobileNumber);
-
-    /*
-    select ts.id, ts.stamp_dt from total_stamps ts
-    left join users u
-    on ts.user_id = u.id
-    where u.mobile_number = '1234567890'
-     */
-
-    @Query("""
-        SELECT  new org.api.burger_loyalty_api.dto.TotalStampDto(
-            ts.id,
-            ts.stampDt
-        )
-        FROM TotalStamp ts
-        LEFT JOIN ts.user u
-        WHERE u.mobileNumber = :mobileNumber
-    """)
-    List<TotalStampDto> findAllStampsByMobileNumber(@Param("mobileNumber") String mobileNumber);
-
-    /*
-    select acs.id, acs.enable_dt, acs.expiration_dt from active_stamps acs
-    left join users u
-    on acs.user_id = u.id
-    where u.mobile_number = '3196611933'
-     */
-
-    @Query("""
-        SELECT new org.api.burger_loyalty_api.dto.ActiveStampDto(
-            acs.id,
-            acs.enableDt,
-            acs.expirationDt
-        )
-        FROM ActiveStamp acs
-        LEFT JOIN acs.user u
-        WHERE u.mobileNumber = :mobileNumber
-    """)
-    List<ActiveStampDto> findAllActiveStampsByMobileNumber(@Param("mobileNumber") String mobileNumber);
 
     Optional<User> findByMobileNumber(String mobileNumber);
 

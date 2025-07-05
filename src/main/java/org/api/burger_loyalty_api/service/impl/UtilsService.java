@@ -4,11 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.api.burger_loyalty_api.dto.ActiveStampDto;
 import org.api.burger_loyalty_api.dto.TotalStampDto;
 import org.api.burger_loyalty_api.dto.UserTargetDto;
+import org.api.burger_loyalty_api.repository.IActiveStampRepository;
+import org.api.burger_loyalty_api.repository.ITotalStampRepository;
 import org.api.burger_loyalty_api.repository.IUserRepository;
+import org.api.burger_loyalty_api.service.inteface.IActiveStampService;
+import org.api.burger_loyalty_api.service.inteface.ITotalStampService;
 import org.api.burger_loyalty_api.service.inteface.IUtilsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,6 +23,8 @@ import java.util.List;
 public class UtilsService implements IUtilsService {
 
     private final IUserRepository userRepository;
+    private final IActiveStampRepository activeStampRepository;
+    private final ITotalStampRepository totalStampRepository;
 
     public Long findIdUserByMobileNumber(String mobileNumber){
         Long userId = userRepository.findIdByMobileNumber(mobileNumber).orElseThrow(() ->
@@ -23,17 +32,34 @@ public class UtilsService implements IUtilsService {
         return userId;
     }
 
+    @Transactional
     @Override
     public UserTargetDto findUserTarget(String mobileNumber) {
         this.findIdUserByMobileNumber(mobileNumber);
-        UserTargetDto userTargetDto = userRepository.findClientTotalStampsActiveStamps(mobileNumber);
-        List<TotalStampDto> totalStampDtoList = userRepository.findAllStampsByMobileNumber(mobileNumber);
-        List<ActiveStampDto> activeStampDtoList = userRepository.findAllActiveStampsByMobileNumber(mobileNumber);
+        List<TotalStampDto> totalStampDtos = totalStampRepository.findAllStampsByMobileNumber(mobileNumber);
+        List<ActiveStampDto> activeStampDtos = activeStampRepository.findAllActiveStampsByMobileNumber(mobileNumber);
 
-        userTargetDto.setStamps(totalStampDtoList);
-        userTargetDto.setActiveStamps(activeStampDtoList);
+        List<Long> idsToRemove = new ArrayList<>();
+        List<ActiveStampDto> activeStampDtosFilter = activeStampDtos
+                .stream()
+                .filter(activeStampDto -> {
+                    LocalDateTime today = LocalDateTime.now();
+                    if(activeStampDto.getExpirationDt().isAfter(today) ||
+                            activeStampDto.getExpirationDt().isEqual(today)){
+                        return true;
+                    }
+                    idsToRemove.add(activeStampDto.getId());
+                    return false;
+                }).toList();
+
+        activeStampRepository.removeActiveStampsByIds(idsToRemove);
+        UserTargetDto userTargetDto = userRepository.findClientTotalStampsActiveStamps(mobileNumber);
+        userTargetDto.setStamps(totalStampDtos);
+        userTargetDto.setActiveStamps(activeStampDtosFilter);
 
         return userTargetDto;
     }
+
+
 
 }
