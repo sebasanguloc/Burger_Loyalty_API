@@ -3,8 +3,10 @@ package org.api.burger_loyalty_api.controller.admin;
 import lombok.RequiredArgsConstructor;
 import org.api.burger_loyalty_api.dto.ResponseDto;
 import org.api.burger_loyalty_api.dto.UserDashboardDto;
+import org.api.burger_loyalty_api.dto.UserTargetDto;
 import org.api.burger_loyalty_api.service.inteface.IActiveStampService;
 import org.api.burger_loyalty_api.service.inteface.IUserService;
+import org.api.burger_loyalty_api.service.inteface.IUtilsService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,6 +22,7 @@ public class AdminController {
 
     private final IUserService userService;
     private final IActiveStampService activeStampService;
+    private final IUtilsService utilsService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
@@ -31,7 +34,8 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{mobileNumber}")
     public ResponseEntity<?> getClient(@PathVariable String mobileNumber){
-        return null;
+        UserTargetDto userTarget = utilsService.findUserTarget(mobileNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(userTarget);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
