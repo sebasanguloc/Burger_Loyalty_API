@@ -91,7 +91,6 @@ public class ProjectSecurityDevConfig {
                         BasicAuthenticationFilter.class
                 );
         http.formLogin(withDefaults());
-        http.httpBasic(withDefaults());
         return http.build();
     }
 

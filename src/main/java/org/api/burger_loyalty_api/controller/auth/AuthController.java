@@ -10,12 +10,16 @@ import org.api.burger_loyalty_api.service.inteface.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -25,10 +29,14 @@ public class AuthController {
     private final IUserService userService;
 
     @RequestMapping("/Angus-Burgers-Loyalty")
-    public User AngusBurgersLoyalty(Authentication authentication){
-        //User user = userRepository.findByMobileNumber(authentication.getName()).orElseThrow(() ->
-        //        new UsernameNotFoundException("User details not found for user: " + authentication.getName()));
-        return null;
+    public ResponseEntity<Map<String, Object>> AngusBurgersLoyalty(Authentication authentication){
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", authentication.getName());
+        response.put("roles", authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList());
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
