@@ -1,6 +1,7 @@
 package org.api.burger_loyalty_api.controller.client;
 
 import lombok.RequiredArgsConstructor;
+import org.api.burger_loyalty_api.dto.ResponseDto;
 import org.api.burger_loyalty_api.dto.UserTargetDto;
 import org.api.burger_loyalty_api.service.inteface.IActiveStampService;
 import org.api.burger_loyalty_api.service.inteface.ITotalStampService;
@@ -11,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/client")
@@ -32,8 +35,19 @@ public class ClientController {
 
     @PreAuthorize("hasRole('CLIENT')")
     @PatchMapping("/claim")
-    public ResponseEntity<?> claimStamp(Authentication authentication){
-        return null;
+    public ResponseEntity<?> claimStamp(
+            Authentication authentication,
+            @RequestParam long totalStamps,
+            @RequestBody List<Long> idsToActive
+    )
+    {
+        String mobileNumber = authentication.getName();
+        totalStampService.addStampToTarget(mobileNumber, totalStamps, idsToActive);
+        ResponseDto response = new ResponseDto(
+            String.valueOf(HttpStatus.OK.value()),
+                "Stamps added to the target"
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }

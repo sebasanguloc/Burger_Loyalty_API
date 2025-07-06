@@ -35,5 +35,11 @@ public interface ITotalStampRepository extends JpaRepository<TotalStamp, Long> {
     """)
     List<TotalStampDto> findAllStampsByMobileNumber(@Param("mobileNumber") String mobileNumber);
 
-
+    @Query(value = """
+        DELETE FROM total_stamps ts
+        USING users u
+        WHERE ts.user_id = u.id
+        AND u.mobile_number = :mobileNumber;
+    """, nativeQuery = true)
+    void removeStampsByMobileNumber(String mobileNumber);
 }

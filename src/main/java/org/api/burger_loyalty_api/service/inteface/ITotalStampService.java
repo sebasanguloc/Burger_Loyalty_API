@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface ITotalStampService {
 
-    void removeTotalStampsByIds(String mobileNumber, List<Long> ids);
+    void addStampToTarget(String mobileNumber, long totalStamps, List<Long> idsToActive);
 
+    void removeTotalStampsByIds(String mobileNumber, List<Long> ids);
 }
