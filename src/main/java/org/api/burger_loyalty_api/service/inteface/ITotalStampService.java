@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ITotalStampService {
 
-    void removeStampsByIds(List<Long> ids);
+    void removeTotalStampsByIds(String mobileNumber, List<Long> ids);
 
 }

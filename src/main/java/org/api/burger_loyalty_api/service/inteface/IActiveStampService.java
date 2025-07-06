@@ -8,4 +8,6 @@ public interface IActiveStampService {
 
     void activeStamp(String mobilenumber);
 
+    void removeActiveStampsByIds(String mobileNumber, List<Long> ids);
+
 }

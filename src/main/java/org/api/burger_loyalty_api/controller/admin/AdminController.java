@@ -2,9 +2,12 @@ package org.api.burger_loyalty_api.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.api.burger_loyalty_api.dto.ResponseDto;
+import org.api.burger_loyalty_api.dto.TargetRequestDto;
 import org.api.burger_loyalty_api.dto.UserDashboardDto;
 import org.api.burger_loyalty_api.dto.UserTargetDto;
+import org.api.burger_loyalty_api.repository.ITotalStampRepository;
 import org.api.burger_loyalty_api.service.inteface.IActiveStampService;
+import org.api.burger_loyalty_api.service.inteface.ITotalStampService;
 import org.api.burger_loyalty_api.service.inteface.IUserService;
 import org.api.burger_loyalty_api.service.inteface.IUtilsService;
 import org.springframework.data.domain.Page;
@@ -14,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import java.util.*;
 
 @RestController
 @RequestMapping("/clients")
@@ -22,6 +26,7 @@ public class AdminController {
 
     private final IUserService userService;
     private final IActiveStampService activeStampService;
+    private final ITotalStampService totalStampService;
     private final IUtilsService utilsService;
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -61,8 +66,18 @@ public class AdminController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{mobileNumber}")
-    public ResponseEntity<?> updateClient(@PathVariable String mobileNumber){
-        return null;
+    public ResponseEntity<?> updateClientTarget(@PathVariable String mobileNumber, @RequestBody TargetRequestDto targetRequestDto){
+        List<Long> idsActiveStamps = targetRequestDto.getIdsActiveStamps();
+        List<Long> idsTotalStamps = targetRequestDto.getIdsTotalStamps();
+
+        activeStampService.removeActiveStampsByIds(mobileNumber,idsActiveStamps);
+        totalStampService.removeTotalStampsByIds(mobileNumber,idsTotalStamps);
+
+        ResponseDto response = new ResponseDto(
+                String.valueOf(HttpStatus.OK.value()), "User target " + mobileNumber + " updated successfully"
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 

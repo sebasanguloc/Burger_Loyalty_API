@@ -14,8 +14,8 @@ import java.util.List;
 public interface ITotalStampRepository extends JpaRepository<TotalStamp, Long> {
 
     @Modifying
-    @Query("DELETE FROM TotalStamp ts WHERE ts.id NOT IN :ids")
-    void removeStampsByIds(@Param("ids") List<Long> ids);
+    @Query("DELETE FROM TotalStamp ts WHERE ts.id IN :ids")
+    void removeTotalStampsByIds(@Param("ids") List<Long> ids);
 
         /*
     select ts.id, ts.stamp_dt from total_stamps ts

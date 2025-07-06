@@ -8,6 +8,7 @@ import org.api.burger_loyalty_api.repository.IActiveStampRepository;
 import org.api.burger_loyalty_api.service.inteface.IActiveStampService;
 import org.api.burger_loyalty_api.service.inteface.IUtilsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,6 +33,13 @@ public class ActiveStampService implements IActiveStampService {
         activeStamp.setExpirationDt(LocalDateTime.now().plusHours(24));
 
         activeStampRepository.save(activeStamp);
+    }
+
+    @Transactional
+    @Override
+    public void removeActiveStampsByIds(String mobileNumber, List<Long> ids) {
+        utilsService.findIdUserByMobileNumber(mobileNumber);
+        activeStampRepository.removeActiveStampsByIds(ids);
     }
 
 }
