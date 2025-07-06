@@ -8,6 +8,7 @@ class BurgerLoyaltyApiApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }
